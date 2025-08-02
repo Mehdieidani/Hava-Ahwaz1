@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>هواشناسی جهانی و ایران</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background: #f0f0f0;
+      color: #333;
+      padding: 20px;
+      text-align: center;
+    }
+    #weather {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+    select {
+      padding: 8px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">وضعیت آب‌وهوا</h1>
+
+  <select id="langSelect" onchange="changeLang()">
+    <option value="fa">فارسی</option>
+    <option value="ar">العربية</option>
+  </select>
+
+  <div id="weather">
+    <h2 id="city">اهواز</h2>
+    <p id="temp">دمــا: ...</p>
+    <p id="humidity">رطوبت: ...</p>
+    <p id="wind">باد: ...</p>
+  </div>
+
+  <script>
+    const apiKey = "dc9c93f51cdd375d459483c2a9f86d88";
+    const city = "Ahvaz";
+    let lang = "fa";
+
+    const translations = {
+      fa: {
+        title: "وضعیت آب‌وهوا",
+        temp: "دمــا",
+        humidity: "رطوبت",
+        wind: "باد",
+        city: "اهواز"
+      },
+      ar: {
+        title: "حالة الطقس",
+        temp: "درجة الحرارة",
+        humidity: "الرطوبة",
+        wind: "الرياح",
+        city: "الأهواز"
+      }
+    };
+
+    function changeLang() {
+      lang = document.getElementById("langSelect").value;
+      fetchWeather();
+    }
+
+    function fetchWeather() {
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=${lang}`)
+        .then(res => res.json())
+        .then(data => {
+          const t = translations[lang];
+          document.getElementById("title").textContent = t.title;
+          document.getElementById("city").textContent = t.city;
+          document.getElementById("temp").textContent = `${t.temp}: ${data.main.temp}°C`;
+          document.getElementById("humidity").textContent = `${t.humidity}: ${data.main.humidity}%`;
+          document.getElementById("wind").textContent = `${t.wind}: ${data.wind.speed} m/s`;
+        });
+    }
+
+    fetchWeather();
+  </script>
+</body>
+</html>
